@@ -1,0 +1,35 @@
+@startuml seq_uc03_detalhado
+skinparam backgroundColor #FFFFFF
+title Diagrama de Sequencia (Projeto) - UC-03 Elaborar Orcamento
+actor Atendente
+boundary "OrcamentoController" as C
+control "OrcamentoService" as Serv
+entity "OrdemServico" as OS
+entity "Orcamento" as Orc
+database "OrcamentoRepository" as Repo
+
+Atendente -> C : POST /orcamentos {idOS, itens}
+activate C
+C -> Serv : gerarOrcamento(idOS, itens)
+activate Serv
+Serv -> OS : buscarPorId(idOS)
+activate OS
+OS --> Serv : ordemServico
+deactivate OS
+Serv -> Orc : new Orcamento(ordemServico)
+activate Orc
+loop para cada item
+  Serv -> Orc : adicionarItem(item)
+end
+Serv -> Orc : calcularTotal()
+Orc --> Serv : valorTotal
+deactivate Orc
+Serv -> Repo : save(orcamento)
+activate Repo
+Repo --> Serv : orcamentoSalvo
+deactivate Repo
+Serv --> C : OrcamentoDTO
+deactivate Serv
+C --> Atendente : 201 Created (OrcamentoDTO)
+deactivate C
+@enduml

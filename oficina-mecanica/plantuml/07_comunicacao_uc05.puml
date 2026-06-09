@@ -1,0 +1,19 @@
+@startuml comunicacao_uc05
+skinparam backgroundColor #FFFFFF
+title Diagrama de Comunicacao - UC-05 Efetuar Pagamento
+
+actor Atendente as A
+participant ":PagamentoController" as C
+participant ":PagamentoService" as S
+participant ":OrdemServico" as OS
+participant ":PagamentoRepository" as R
+
+A -> C : 1: registrarPagamento(idOS, forma, valor)
+C -> S : 2: processar(idOS, forma, valor)
+S -> OS : 3: buscarPorId(idOS)
+S -> OS : 4: validarValor(valor)
+S -> OS : 5: alterarStatus(CONCLUIDA)
+S -> R : 6: save(pagamento)
+S --> C : 7: reciboDTO
+C --> A : 8: exibeRecibo
+@enduml

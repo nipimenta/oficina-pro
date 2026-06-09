@@ -1,0 +1,16 @@
+@startuml dss_uc05_pagamento
+skinparam backgroundColor #FFFFFF
+title DSS - UC-05 Efetuar Pagamento
+actor Atendente
+participant ":Sistema" as S
+
+Atendente -> S : selecionarOS(idOS)
+activate S
+S --> Atendente : exibeValorTotal()
+deactivate S
+Atendente -> S : registrarPagamento(forma, valor)
+activate S
+S --> Atendente : confirmaPagamento()
+S --> Atendente : exibeRecibo(numRecibo)
+deactivate S
+@enduml

@@ -1,0 +1,11 @@
+@startuml estados_os
+skinparam backgroundColor #FFFFFF
+title Diagrama de Estados - Ordem de Servico
+[*] --> Aberta : abrirOS()
+Aberta --> EmExecucao : aprovarOrcamento()
+Aberta --> Cancelada : cancelar()
+EmExecucao --> Concluida : finalizarServico() / efetuarPagamento()
+EmExecucao --> Cancelada : cancelar()
+Concluida --> [*]
+Cancelada --> [*]
+@enduml

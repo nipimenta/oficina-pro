@@ -1,0 +1,76 @@
+@startuml modelo_dados
+skinparam backgroundColor #FFFFFF
+title Modelo de Dados (DER) - Sistema OficinaPro
+
+entity "cliente" as cliente {
+  * id : BIGINT <<PK>>
+  --
+  nome : VARCHAR(120)
+  cpf : VARCHAR(11) <<UNIQUE>>
+  telefone : VARCHAR(20)
+  email : VARCHAR(120)
+}
+entity "veiculo" as veiculo {
+  * id : BIGINT <<PK>>
+  --
+  cliente_id : BIGINT <<FK>>
+  placa : VARCHAR(7) <<UNIQUE>>
+  marca : VARCHAR(50)
+  modelo : VARCHAR(50)
+  ano : INT
+}
+entity "funcionario" as func {
+  * id : BIGINT <<PK>>
+  --
+  nome : VARCHAR(120)
+  matricula : VARCHAR(20)
+  cargo : VARCHAR(20)
+}
+entity "ordem_servico" as os {
+  * id : BIGINT <<PK>>
+  --
+  veiculo_id : BIGINT <<FK>>
+  funcionario_id : BIGINT <<FK>>
+  data_abertura : TIMESTAMP
+  status : VARCHAR(20)
+}
+entity "item_servico" as item {
+  * id : BIGINT <<PK>>
+  --
+  os_id : BIGINT <<FK>>
+  servico_id : BIGINT <<FK>>
+  peca_id : BIGINT <<FK>>
+  quantidade : INT
+  valor_unitario : NUMERIC(10,2)
+}
+entity "servico" as serv {
+  * id : BIGINT <<PK>>
+  --
+  nome : VARCHAR(100)
+  preco_mao_obra : NUMERIC(10,2)
+}
+entity "peca" as peca {
+  * id : BIGINT <<PK>>
+  --
+  codigo : VARCHAR(30)
+  nome : VARCHAR(100)
+  preco_venda : NUMERIC(10,2)
+  qtd_estoque : INT
+}
+entity "pagamento" as pag {
+  * id : BIGINT <<PK>>
+  --
+  os_id : BIGINT <<FK>>
+  valor : NUMERIC(10,2)
+  forma : VARCHAR(20)
+  data : TIMESTAMP
+}
+
+cliente ||--o{ veiculo
+veiculo ||--o{ os
+func ||--o{ os
+os ||--|{ item
+serv ||--o{ item
+peca ||--o{ item
+os ||--o| pag
+@enduml

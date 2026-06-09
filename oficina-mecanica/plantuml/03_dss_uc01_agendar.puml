@@ -1,0 +1,19 @@
+@startuml dss_uc01_agendar
+skinparam backgroundColor #FFFFFF
+title DSS - UC-01 Agendar Servico
+actor Cliente
+participant ":Sistema" as S
+
+Cliente -> S : informarDados(cpf, placa)
+activate S
+S --> Cliente : exibeVeiculos()
+deactivate S
+Cliente -> S : selecionarServico(idServico, data, hora)
+activate S
+S --> Cliente : confirmaDisponibilidade()
+deactivate S
+Cliente -> S : confirmarAgendamento()
+activate S
+S --> Cliente : exibeComprovante(numAgendamento)
+deactivate S
+@enduml

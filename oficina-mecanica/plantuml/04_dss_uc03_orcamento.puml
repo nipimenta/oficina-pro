@@ -1,0 +1,21 @@
+@startuml dss_uc03_orcamento
+skinparam backgroundColor #FFFFFF
+title DSS - UC-03 Elaborar Orcamento
+actor Atendente
+participant ":Sistema" as S
+
+Atendente -> S : iniciarOrcamento(idOS)
+activate S
+S --> Atendente : exibeDadosOS()
+deactivate S
+loop para cada item
+  Atendente -> S : adicionarItem(tipo, idRef, qtd)
+  activate S
+  S --> Atendente : exibeSubtotal()
+  deactivate S
+end
+Atendente -> S : finalizarOrcamento()
+activate S
+S --> Atendente : exibeValorTotal()
+deactivate S
+@enduml

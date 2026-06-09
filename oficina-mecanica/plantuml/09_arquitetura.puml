@@ -1,0 +1,33 @@
+@startuml arquitetura
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+title Arquitetura em Camadas - Sistema OficinaPro
+
+package "Frontend (React + TypeScript)" {
+  [SPA - Single Page Application] as SPA
+}
+
+package "Backend (Spring Boot)" {
+  package "Camada de Apresentacao" {
+    [Controllers REST] as CTRL
+  }
+  package "Camada de Negocio" {
+    [Services] as SVC
+  }
+  package "Camada de Persistencia" {
+    [Repositories JPA] as REPO
+  }
+  package "Camada de Dominio" {
+    [Entidades / DTOs] as DOM
+  }
+}
+
+database "PostgreSQL" as DB
+
+SPA --> CTRL : HTTP/REST (JSON)
+CTRL --> SVC
+SVC --> REPO
+SVC --> DOM
+REPO --> DOM
+REPO --> DB : JDBC / Hibernate
+@enduml

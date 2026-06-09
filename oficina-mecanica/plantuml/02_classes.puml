@@ -1,0 +1,110 @@
+@startuml diagrama_classes
+skinparam backgroundColor #FFFFFF
+skinparam classAttributeIconSize 0
+title Diagrama de Classes - Sistema OficinaPro
+
+class Cliente {
+  - id: Long
+  - nome: String
+  - cpf: String
+  - telefone: String
+  - email: String
+  + getVeiculos(): List<Veiculo>
+}
+
+class Veiculo {
+  - id: Long
+  - placa: String
+  - marca: String
+  - modelo: String
+  - ano: int
+  - quilometragem: int
+}
+
+class Funcionario {
+  - id: Long
+  - nome: String
+  - matricula: String
+  - cargo: Cargo
+}
+
+class OrdemServico {
+  - id: Long
+  - dataAbertura: LocalDateTime
+  - dataConclusao: LocalDateTime
+  - status: StatusOS
+  - descricaoProblema: String
+  + calcularTotal(): BigDecimal
+  + adicionarItem(item: ItemServico): void
+}
+
+class ItemServico {
+  - id: Long
+  - descricao: String
+  - quantidade: int
+  - valorUnitario: BigDecimal
+  + getSubtotal(): BigDecimal
+}
+
+class Servico {
+  - id: Long
+  - nome: String
+  - precoMaoDeObra: BigDecimal
+  - tempoEstimado: int
+}
+
+class Peca {
+  - id: Long
+  - codigo: String
+  - nome: String
+  - precoVenda: BigDecimal
+  - quantidadeEstoque: int
+  + baixarEstoque(qtd: int): void
+}
+
+class Orcamento {
+  - id: Long
+  - dataEmissao: LocalDate
+  - valorTotal: BigDecimal
+  - aprovado: boolean
+  + aprovar(): void
+}
+
+class Pagamento {
+  - id: Long
+  - valor: BigDecimal
+  - data: LocalDateTime
+  - forma: FormaPagamento
+}
+
+enum StatusOS {
+  ABERTA
+  EM_EXECUCAO
+  CONCLUIDA
+  CANCELADA
+}
+
+enum Cargo {
+  ATENDENTE
+  MECANICO
+  GERENTE
+}
+
+enum FormaPagamento {
+  DINHEIRO
+  CARTAO
+  PIX
+}
+
+Cliente "1" -- "0..*" Veiculo : possui >
+Veiculo "1" -- "0..*" OrdemServico : gera >
+OrdemServico "1" *-- "1..*" ItemServico : contem >
+OrdemServico "1" -- "0..1" Orcamento : tem >
+OrdemServico "1" -- "0..1" Pagamento : quitada por >
+OrdemServico "0..*" -- "1" Funcionario : responsavel >
+ItemServico "0..*" --> "0..1" Servico : refere >
+ItemServico "0..*" --> "0..1" Peca : utiliza >
+Funcionario --> Cargo
+OrdemServico --> StatusOS
+Pagamento --> FormaPagamento
+@enduml

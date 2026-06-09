@@ -1,0 +1,31 @@
+@startuml componentes
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+title Diagrama de Componentes - Sistema OficinaPro
+
+component [Web App React] as web
+component [API Gateway] as gw
+component [Modulo Clientes] as mc
+component [Modulo Ordens de Servico] as mos
+component [Modulo Orcamento] as mo
+component [Modulo Estoque] as me
+component [Modulo Pagamento] as mp
+database "PostgreSQL" as db
+queue "RabbitMQ" as mq
+
+web --> gw : REST
+gw --> mc
+gw --> mos
+gw --> mo
+gw --> me
+gw --> mp
+mos --> mo
+mo --> me
+mp ..> mq : evento PagamentoConfirmado
+me ..> mq : evento EstoqueBaixo
+mc --> db
+mos --> db
+mo --> db
+me --> db
+mp --> db
+@enduml

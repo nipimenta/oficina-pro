@@ -1,0 +1,23 @@
+@startuml implantacao
+skinparam backgroundColor #FFFFFF
+title Diagrama de Implantacao - Sistema OficinaPro
+
+node "Dispositivo Cliente" {
+  artifact "Navegador Web" as browser
+}
+node "Servidor de Aplicacao (Cloud)" {
+  artifact "Frontend React (Nginx)" as front
+  artifact "Backend Spring Boot (JAR)" as back
+}
+node "Servidor de Banco de Dados" {
+  database "PostgreSQL" as db
+}
+node "Servidor de Mensageria" {
+  queue "RabbitMQ" as mq
+}
+
+browser --> front : HTTPS
+front --> back : REST/JSON (8080)
+back --> db : JDBC (5432)
+back --> mq : AMQP (5672)
+@enduml
