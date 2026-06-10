@@ -1,31 +1,67 @@
 @startuml componentes
 skinparam backgroundColor #FFFFFF
 skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam nodesep 110
+skinparam ranksep 90
+skinparam component {
+  BackgroundColor #F7F8FA
+  BorderColor #2B2B2B
+}
+skinparam rectangle {
+  BackgroundColor #F2F5FB
+  BorderColor #3B6EA5
+}
+skinparam ArrowColor #E8833A
+skinparam database {
+  BackgroundColor #EEF0F6
+  BorderColor #2B2B2B
+}
+skinparam queue {
+  BackgroundColor #EEF0F6
+  BorderColor #2B2B2B
+}
 title Diagrama de Componentes - Sistema OficinaPro
 
-component [Web App React] as web
-component [API Gateway] as gw
-component [Modulo Clientes] as mc
-component [Modulo Ordens de Servico] as mos
-component [Modulo Orcamento] as mo
-component [Modulo Estoque] as me
-component [Modulo Pagamento] as mp
-database "PostgreSQL" as db
-queue "RabbitMQ" as mq
+actor "NAVEGADOR" as nav
+component "API" as api
 
-web --> gw : REST
-gw --> mc
-gw --> mos
-gw --> mo
-gw --> me
-gw --> mp
-mos --> mo
-mo --> me
-mp ..> mq : evento PagamentoConfirmado
-me ..> mq : evento EstoqueBaixo
-mc --> db
-mos --> db
-mo --> db
-me --> db
-mp --> db
+component "<<service>>\nCLIENTES" as cli
+component "<<service>>\nORDENS DE SERVICO" as os
+component "<<service>>\nORCAMENTO" as orc
+component "<<service>>\nESTOQUE" as est
+component "<<service>>\nPAGAMENTO" as pag
+
+database "PostgreSQL\n(OficinaPro DB)" as db
+
+rectangle "FILAS" as filas {
+  queue "FILA DE PAGAMENTOS (MQ)" as qpag
+  queue "FILA DE ESTOQUE (MQ)" as qest
+}
+
+component "WORKER NOTIFICACOES" as wnot
+component "WORKER ESTOQUE" as west
+
+nav <--> api
+
+api "REST" -(0- cli
+api "REST" -(0- os
+api "REST" -(0- orc
+api "REST" -(0- est
+api "REST" -(0- pag
+
+cli "TCP/IP" -(0- db
+os "TCP/IP" -(0- db
+orc "TCP/IP" -(0- db
+est "TCP/IP" -(0- db
+pag "TCP/IP" -(0- db
+
+pag -[#1F6F2E]-> qpag : HTTP
+est -[#1F6F2E]-> qest : HTTP
+qpag -[#1F6F2E]-> wnot : HTTP
+qest -[#1F6F2E]-> west : HTTP
+
+wnot "TCP/IP" -(0- db
+west "TCP/IP" -(0- db
 @enduml
